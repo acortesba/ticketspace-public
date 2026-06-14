@@ -1,0 +1,13 @@
+{
+  "welcome": "Bienvenido a TicketSpace",
+  "loading": "Cargando...",
+  "error": "Ocurrió un error",
+  "save": "Guardar",
+  "cancel": "Cancelar",
+  "delete": "Eliminar",
+  "edit": "Editar",
+  "dashboard": "Panel de Control",
+  "events": "Eventos",
+  "tickets": "Entradas",
+  "settings": "Configuración"
+}

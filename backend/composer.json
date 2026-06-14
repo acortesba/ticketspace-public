@@ -1,0 +1,41 @@
+{
+    "name": "ticketspace/backend",
+    "description": "TicketSpace - Event Ticketing Platform API",
+    "type": "project",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=8.2",
+        "endroid/qr-code": "^5.0",
+        "firebase/php-jwt": "^6.10",
+        "phpmailer/phpmailer": "^6.9",
+        "stripe/stripe-php": "^13.0",
+        "tschoffelen/php-pkpass": "^2.0",
+        "google/apiclient": "^2.15",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5",
+        "squizlabs/php_codesniffer": "^3.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "TicketSpace\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TicketSpace\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "lint": "phpcs --standard=PSR12 src/",
+        "lint-fix": "phpcbf --standard=PSR12 src/"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}

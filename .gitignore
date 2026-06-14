@@ -1,0 +1,66 @@
+# =============================================
+# TicketSpace .gitignore
+# =============================================
+
+# ----- Environment & Secrets -----
+.env
+.env.local
+.env.production
+*.pem
+*.p12
+*.key
+*.cert
+
+# ----- PHP / Composer -----
+backend/vendor/
+backend/composer.lock
+
+# ----- Node / NPM -----
+frontend/node_modules/
+frontend/dist/
+frontend/package-lock.json
+npm-debug.log*
+
+# ----- IDE -----
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.settings/
+.classpath
+
+# ----- OS -----
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ----- Logs -----
+*.log
+logs/
+backend/logs/
+backend/storage/logs/*
+!backend/storage/logs/.gitkeep
+
+# ----- Certificates & Secrets -----
+backend/certs/
+
+# ----- Uploads (user content) -----
+backend/public/uploads/*
+!backend/public/uploads/.gitkeep
+
+# ----- QR Codes (generated) -----
+backend/storage/qrcodes/*
+!backend/storage/qrcodes/.gitkeep
+
+# ----- Cache -----
+backend/storage/cache/*
+!backend/storage/cache/.gitkeep
+backend/storage/rate_limits/*
+!backend/storage/rate_limits/.gitkeep
+
+# ----- Build artifacts -----
+*.map

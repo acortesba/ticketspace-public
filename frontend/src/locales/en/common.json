@@ -1,0 +1,13 @@
+{
+  "welcome": "Welcome to TicketSpace",
+  "loading": "Loading...",
+  "error": "An error occurred",
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "dashboard": "Dashboard",
+  "events": "Events",
+  "tickets": "Tickets",
+  "settings": "Settings"
+}
