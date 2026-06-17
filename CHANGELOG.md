@@ -5,6 +5,15 @@ All notable changes to the TicketSpace project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2026-06-17
+
+### Added
+- Architecture: Switched to remote Vercel deployment for frontend React SPA to skip local testing and ensure production parity.
+- Architecture: Switched to Hostinger Premium Shared Hosting with remote MySQL cluster for backend testing.
+- Backend: Added root `.htaccess` file to automatically route subdomain traffic into the `public/index.php` entry point on Hostinger.
+- Backend: Generated pure SQL schema (`migrations/schema.sql`) for bypassing local PHP dependencies and importing directly via phpMyAdmin.
+- Tutorial: Added `01-development-connections.md` to document the remote free-tier services used for staging.
+
 ## [0.1.1] - 2026-06-15
 
 ### Added

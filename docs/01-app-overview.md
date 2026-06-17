@@ -137,14 +137,14 @@ Email templates are stored in the `email_templates` table and can be customized 
 ┌─────────────────────────────────────────────────────┐
 │                     React SPA                       │
 │   Vite • React Router • i18n • Glassmorphism UI     │
-│              http://localhost:5173                   │
+│             https://ticketspace.vercel.app           │
 └──────────────────────┬──────────────────────────────┘
                        │ Axios (JWT Bearer)
                        ▼
 ┌─────────────────────────────────────────────────────┐
 │                 PHP REST API                        │
 │  Router → CORS → RateLimit → Auth → RBAC → Ctrl    │
-│              http://localhost:8000                   │
+│           https://api.ticketspace.es/api/v1          │
 └──────────────────────┬──────────────────────────────┘
                        │ PDO (Prepared Statements)
                        ▼
