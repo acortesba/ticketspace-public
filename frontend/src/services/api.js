@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+// VITE_API_URL must be set in Vercel environment variables.
+// Example: https://api.ticketspace.es/api/v1
+const BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
+
 const api = axios.create({
-  baseURL: '/api/v1',
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -40,7 +44,7 @@ api.interceptors.response.use(
         }
 
         // Try to refresh token
-        const res = await axios.post('/api/v1/auth/refresh', { refresh_token: refreshToken });
+        const res = await axios.post(`${BASE_URL}/auth/refresh`, { refresh_token: refreshToken });
         
         if (res.data.success) {
           const { access_token } = res.data.data;
