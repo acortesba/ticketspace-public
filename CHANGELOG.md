@@ -5,6 +5,17 @@ All notable changes to the TicketSpace project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2026-06-18
+
+### Changed
+- Layout: Enforced strict `100dvh` no-scroll layout system across all pages.
+- Layout: Navbar changed from `position: fixed` to a relative flex item (`shrink-0`) so the content area always fills the exact remaining viewport height.
+- CSS: Added `--navbar-height: 64px` token and new `.page-content` utility class with design-system-aware padding (`--space-lg` × `--space-md`).
+- CSS: `100vw` replaced with `100%` throughout to prevent Windows scrollbar overflow artifacts.
+- CSS: Added `min-height: 0` to flex children to allow correct shrinking behavior.
+- Pages: `Landing`, `Login`, `Register` completely rewritten to fit within the single-screen constraint.
+- Docs: Updated `03-design-system.md` to document the new layout patterns.
+
 ## [0.1.2] - 2026-06-17
 
 ### Added

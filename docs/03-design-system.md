@@ -179,30 +179,35 @@ States:
 
 ## Layout Patterns
 
-### Page Container (100vh)
-All pages are constrained to the viewport height:
+### Page Container (strict 100dvh)
+All pages are constrained to the viewport. **No scrolling anywhere.** Content must fit.
 
 ```css
 .page-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  width: 100vw;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;       /* Hard stop — page never scrolls */
 }
 
-.scrollable-content {
+.page-content {
   flex: 1;
-  overflow-y: auto;    /* Only this area scrolls */
-  overflow-x: hidden;
-  padding: var(--space-xl) 0;
+  min-height: 0;          /* Allows flex child to shrink to available space */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg) var(--space-md); /* 24px × 16px — system tokens */
 }
 ```
 
 ### Navbar
-- Fixed top (`position: fixed`, `z-index: 50`)
+- **Relative** (not fixed) — participates in the flex column layout as `shrink-0`
 - Frosted glass background: `bg-[#0a0e17]/80 backdrop-blur-md`
 - Border bottom: `border-white/10`
-- Height: 64px (`h-16`)
+- Height: `--navbar-height: 64px` (`h-16`)
 - Responsive: hamburger menu on mobile
 
 ---
