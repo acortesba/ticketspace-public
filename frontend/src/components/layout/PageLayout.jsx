@@ -6,7 +6,7 @@ const PageLayout = () => {
   return (
     <div className="page-container">
       <Navbar />
-      <main className="scrollable-content pt-20"> {/* pt-20 to account for fixed navbar */}
+      <main className="scrollable-content w-full h-full relative z-10">
         <Outlet />
       </main>
     </div>

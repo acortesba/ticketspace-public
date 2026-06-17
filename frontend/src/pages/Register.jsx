@@ -63,15 +63,15 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center text-blue-500 mb-6">
-          <Ticket className="h-12 w-12" />
+    <div className="w-full max-w-xl px-4 sm:px-6">
+      <div className="sm:mx-auto sm:w-full">
+        <div className="flex justify-center text-blue-500 mb-2">
+          <Ticket className="h-8 w-8" />
         </div>
-        <h2 className="text-center text-3xl font-bold tracking-tight text-white">
+        <h2 className="text-center text-xl font-bold tracking-tight text-white">
           {t('sign_up')}
         </h2>
-        <p className="mt-2 text-center text-sm text-slate-400">
+        <p className="mt-1 text-center text-sm text-slate-400">
           {t('have_account')}{' '}
           <NavLink to="/login" className="font-medium text-blue-400 hover:text-blue-300">
             {t('login')}
@@ -79,16 +79,16 @@ const Register = () => {
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl">
-        <GlassCard className="py-8 px-4 sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+      <div className="mt-4 sm:mx-auto sm:w-full">
+        <GlassCard className="py-5 px-4 sm:px-8">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             {error && (
-              <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-3 text-sm text-red-400 text-center">
+              <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-2 text-sm text-red-400 text-center">
                 {error}
               </div>
             )}
             
-            <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2">
               <GlassInput
                 label={t('first_name')}
                 name="first_name"
@@ -133,7 +133,7 @@ const Register = () => {
               error={fieldErrors.phone?.[0]}
             />
 
-            <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2">
               <GlassInput
                 label={t('password')}
                 name="password"
@@ -159,7 +159,7 @@ const Register = () => {
 
             <GlassButton
               type="submit"
-              className="w-full"
+              className="w-full mt-2"
               isLoading={loading}
             >
               {t('sign_up')}

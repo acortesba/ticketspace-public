@@ -35,12 +35,12 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center text-blue-500 mb-6">
-          <Ticket className="h-12 w-12" />
+    <div className="w-full max-w-md px-4 sm:px-6">
+      <div className="sm:mx-auto sm:w-full">
+        <div className="flex justify-center text-blue-500 mb-4">
+          <Ticket className="h-10 w-10" />
         </div>
-        <h2 className="text-center text-3xl font-bold tracking-tight text-white">
+        <h2 className="text-center text-2xl font-bold tracking-tight text-white">
           {t('sign_in')}
         </h2>
         <p className="mt-2 text-center text-sm text-slate-400">
@@ -51,9 +51,9 @@ const Login = () => {
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <GlassCard className="py-8 px-4 sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+      <div className="mt-6 sm:mx-auto sm:w-full">
+        <GlassCard className="py-6 px-4 sm:px-8">
+          <form className="space-y-5" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-3 text-sm text-red-400 text-center">
                 {error}
@@ -102,7 +102,7 @@ const Login = () => {
 
             <GlassButton
               type="submit"
-              className="w-full"
+              className="w-full mt-2"
               isLoading={loading}
             >
               {t('sign_in')}
