@@ -230,10 +230,6 @@ class Router
     {
         $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
         
-        // Remove /api prefix if the entry point is already under /api/
-        // This handles both local dev (where /api/ is the root) and production
-        $uri = preg_replace('/^\/api/', '', $uri);
-        
         // Ensure leading slash, remove trailing slash
         $uri = '/' . trim($uri, '/');
         
