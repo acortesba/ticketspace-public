@@ -46,9 +46,9 @@ class User extends BaseModel
 
     /**
      * Register a new user.
-     * Hashes the password and assigns default role (buyer).
+     * Hashes the password and assigns default role (buyer) or specified role.
      */
-    public function register(array $data): ?array
+    public function register(array $data, string $role = 'buyer'): ?array
     {
         $uuid = Sanitizer::generateUuid();
         $verificationToken = Sanitizer::generateToken(32);
@@ -73,8 +73,12 @@ class User extends BaseModel
             return null;
         }
 
-        // Assign default 'buyer' role
-        $this->assignRole($user['id'], 'buyer');
+        // Assign specified role (must be valid in roles table)
+        // Default is 'buyer', but allow 'host' for organizers
+        $validRoles = ['buyer', 'host'];
+        $roleToAssign = in_array($role, $validRoles) ? $role : 'buyer';
+        
+        $this->assignRole($user['id'], $roleToAssign);
 
         // Reload with roles
         return $this->findWithRoles($user['id']);

@@ -26,7 +26,11 @@ const Login = () => {
     const result = await login(formData);
     
     if (result.success) {
-      navigate('/dashboard'); // Will be redirected by ProtectedRoute if not buyer
+      if (result.user?.roles?.includes('host')) {
+        navigate('/host');
+      } else {
+        navigate('/dashboard'); // Will be redirected by ProtectedRoute if not buyer
+      }
     } else {
       setError(result.message || t('error'));
     }

@@ -34,11 +34,12 @@ class AuthController
         $data = \TicketSpace\Routes\Router::getBody();
 
         [$valid, $errors] = Validator::make($data, [
-            'email'      => 'required|email|max:255',
-            'password'   => 'required|min:8|max:100',
-            'first_name' => 'required|string|max:100',
-            'last_name'  => 'required|string|max:100',
-            'phone'      => 'nullable|string|max:20',
+            'email'        => 'required|email|max:255',
+            'password'     => 'required|min:8|max:100',
+            'first_name'   => 'required|string|max:100',
+            'last_name'    => 'required|string|max:100',
+            'phone'        => 'nullable|string|max:20',
+            'account_type' => 'nullable|string|max:20',
         ]);
 
         if (!$valid) {
@@ -62,10 +63,12 @@ class AuthController
         // Keep raw password for hashing in model
         $sanitized['password'] = $data['password'];
 
+        $roleToAssign = isset($data['account_type']) && $data['account_type'] === 'host' ? 'host' : 'buyer';
+
         try {
             \TicketSpace\Utils\Database::beginTransaction();
 
-            $user = $this->userModel->register($sanitized);
+            $user = $this->userModel->register($sanitized, $roleToAssign);
             
             if (!$user) {
                 \TicketSpace\Utils\Database::rollback();

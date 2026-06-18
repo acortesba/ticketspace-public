@@ -16,7 +16,8 @@ const Register = () => {
     email: '', 
     password: '',
     password_confirmation: '',
-    phone: ''
+    phone: '',
+    account_type: 'buyer'
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -28,6 +29,10 @@ const Register = () => {
     if (fieldErrors[e.target.name]) {
       setFieldErrors({ ...fieldErrors, [e.target.name]: null });
     }
+  };
+
+  const handleAccountTypeChange = (type) => {
+    setFormData({ ...formData, account_type: type });
   };
 
   const handleSubmit = async (e) => {
@@ -46,7 +51,8 @@ const Register = () => {
       last_name: formData.last_name,
       email: formData.email,
       password: formData.password,
-      phone: formData.phone
+      phone: formData.phone,
+      account_type: formData.account_type
     });
     
     if (result.success) {
@@ -87,6 +93,32 @@ const Register = () => {
                 {error}
               </div>
             )}
+
+            {/* Account Type Toggle */}
+            <div className="flex p-1 bg-slate-900/50 rounded-xl border border-white/10 mb-4">
+              <button
+                type="button"
+                onClick={() => handleAccountTypeChange('buyer')}
+                className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  formData.account_type === 'buyer' 
+                    ? 'bg-blue-600 text-white' 
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                I want to buy tickets
+              </button>
+              <button
+                type="button"
+                onClick={() => handleAccountTypeChange('host')}
+                className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  formData.account_type === 'host' 
+                    ? 'bg-purple-600 text-white' 
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                I want to host events
+              </button>
+            </div>
             
             <div className="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2">
               <GlassInput

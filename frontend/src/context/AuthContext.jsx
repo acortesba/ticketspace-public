@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('refresh_token', refresh_token);
       setUser(userData);
       
-      return { success: true };
+      return { success: true, user: userData };
     } catch (error) {
       return { 
         success: false, 
