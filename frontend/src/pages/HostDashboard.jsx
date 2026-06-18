@@ -109,10 +109,15 @@ const HostDashboard = () => {
                   <Calendar className="w-4 h-4 mr-2 text-slate-400" />
                   {event.date}
                 </div>
-                <div className="flex items-center text-sm text-slate-300">
-                  <MapPin className="w-4 h-4 mr-2 text-slate-400" />
+                <a 
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location)}`}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center text-sm text-blue-400 hover:text-blue-300 transition-colors"
+                >
+                  <MapPin className="w-4 h-4 mr-2" />
                   {event.location}
-                </div>
+                </a>
               </div>
 
               {/* Progress bar for capacity */}
