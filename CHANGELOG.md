@@ -5,6 +5,13 @@ All notable changes to the TicketSpace project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4] - 2026-06-18
+
+### Fixed
+- Router: Fixed fatal exception in `executePipeline` by adding full support for class name strings, pre-instantiated middleware objects, and callables in the middleware resolution pipeline.
+- Routing: Fixed `RateLimitMiddleware` usage in `api.php` by using `RateLimitMiddleware::strict()` instance instead of incorrect static class/method array pattern.
+- Diagnostics: Added `public/test_db.php` file for verifying PHP configurations and remote database connectivity on Hostinger.
+
 ## [0.1.3] - 2026-06-18
 
 ### Changed

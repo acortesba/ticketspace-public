@@ -175,12 +175,28 @@ class Router
         foreach (array_reverse($middleware) as $mw) {
             $next = $pipeline;
             $pipeline = function (array $params) use ($mw, $next) {
-                if (is_array($mw)) {
-                    [$class, $method] = $mw;
-                    $instance = new $class();
-                    return $instance->$method($next, $params);
+                if (is_string($mw) && class_exists($mw)) {
+                    $instance = new $mw();
+                    return $instance->handle($next, $params);
                 }
-                return $mw($next, $params);
+                if (is_object($mw) && method_exists($mw, 'handle')) {
+                    return $mw->handle($next, $params);
+                }
+                if (is_array($mw) && count($mw) === 2) {
+                    [$classOrObj, $method] = $mw;
+                    if (is_string($classOrObj) && class_exists($classOrObj)) {
+                        $instance = new $classOrObj();
+                        return $instance->$method($next, $params);
+                    }
+                    if (is_object($classOrObj) && method_exists($classOrObj, $method)) {
+                        return $classOrObj->$method($next, $params);
+                    }
+                }
+                if (is_callable($mw)) {
+                    return $mw($next, $params);
+                }
+                
+                throw new \RuntimeException('Invalid middleware type: ' . (is_object($mw) ? get_class($mw) : gettype($mw)));
             };
         }
 
@@ -191,6 +207,7 @@ class Router
                 'message' => $e->getMessage(),
                 'file'    => $e->getFile(),
                 'line'    => $e->getLine(),
+                'trace'   => $e->getTraceAsString(),
             ]);
 
             if (\TicketSpace\Config\App::isDebug()) {

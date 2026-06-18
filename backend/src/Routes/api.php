@@ -23,7 +23,7 @@ $router->group('/api/v1', function (Router $router) {
 
     // ----- Authentication Endpoints -----
     $router->group('/auth', function (Router $router) {
-        $strictRateLimit = [RateLimitMiddleware::class, 'strict'];
+        $strictRateLimit = RateLimitMiddleware::strict();
         
         $router->post('/register', [AuthController::class, 'register'], [$strictRateLimit]);
         $router->post('/login', [AuthController::class, 'login'], [$strictRateLimit]);
