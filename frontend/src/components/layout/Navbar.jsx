@@ -23,7 +23,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <NavLink to="/" className="flex items-center gap-2">
+            <NavLink to={isAuthenticated ? getDashboardLink() : "/"} className="flex items-center gap-2">
               <Ticket className="h-8 w-8 text-blue-500" />
               <span className="text-xl font-bold tracking-tight text-white">TicketSpace</span>
             </NavLink>
