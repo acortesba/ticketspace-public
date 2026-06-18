@@ -79,4 +79,8 @@ export const userService = {
   updatePassword: (data) => api.put('/users/password', data).then(res => res.data),
 };
 
+export const eventService = {
+  createEvent: (data) => api.post('/events', data).then(res => res.data),
+};
+
 export default api;

@@ -1,14 +1,55 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GlassInput, GlassButton } from '../../common/GlassComponents';
 import { MapPin } from 'lucide-react';
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+// Fix leaflet default icon
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
+
+// Component to handle map clicks
+const LocationSelector = ({ position, setPosition }) => {
+  useMapEvents({
+    click(e) {
+      setPosition({ lat: e.latlng.lat, lng: e.latlng.lng });
+    },
+  });
+
+  return position ? <Marker position={[position.lat, position.lng]} /> : null;
+};
+
+// Component to recenter map when position changes programmatically
+const MapUpdater = ({ position }) => {
+  const map = useMap();
+  useEffect(() => {
+    if (position) {
+      map.setView([position.lat, position.lng], map.getZoom());
+    }
+  }, [position, map]);
+  return null;
+};
 
 const StepLocation = ({ data, updateData, onNext, onBack }) => {
   const handleNext = () => {
-    if (data.venueName && data.venueAddress) {
+    if (data.venueName && data.venueAddress && data.latitude && data.longitude) {
       onNext(true);
     } else {
-      alert("Please enter the Venue Name and Address.");
+      alert("Please enter the Venue Name, Address, and pin the location on the map.");
     }
+  };
+
+  const currentPos = data.latitude && data.longitude 
+    ? { lat: data.latitude, lng: data.longitude } 
+    : { lat: 40.4168, lng: -3.7038 }; // Default Madrid
+
+  const handlePositionChange = (pos) => {
+    updateData({ latitude: pos.lat, longitude: pos.lng });
   };
 
   return (
@@ -41,19 +82,26 @@ const StepLocation = ({ data, updateData, onNext, onBack }) => {
           </div>
         </div>
 
-        {/* Mock Map Preview */}
-        {data.venueAddress && (
-          <div className="mt-6 p-1 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20">
-            <div className="bg-slate-900 rounded-lg h-48 flex flex-col items-center justify-center border border-white/5 relative overflow-hidden">
-              {/* Map background pattern */}
-              <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at center, #ffffff 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
-              <MapPin className="w-8 h-8 text-red-500 mb-2 drop-shadow-lg z-10" />
-              <p className="text-white font-medium z-10 text-center px-4">{data.venueName || "Venue"}</p>
-              <p className="text-sm text-slate-400 z-10 text-center px-4">{data.venueAddress}</p>
-              <div className="absolute bottom-2 right-2 px-2 py-1 bg-black/50 rounded text-[10px] text-white/50">Google Maps Preview</div>
+        <div>
+          <label className="block text-sm font-medium text-slate-300 mb-2">Pin the exact location <span className="text-red-400">*</span></label>
+          <p className="text-xs text-slate-400 mb-3">Click on the map to place the pin precisely where your venue entrance is.</p>
+          <div className="p-1 rounded-xl bg-white/5 border border-white/10">
+            <div className="h-64 w-full rounded-lg overflow-hidden relative z-0">
+              <MapContainer 
+                center={[currentPos.lat, currentPos.lng]} 
+                zoom={13} 
+                style={{ height: '100%', width: '100%' }}
+              >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
+                  url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                />
+                <LocationSelector position={currentPos} setPosition={handlePositionChange} />
+                <MapUpdater position={currentPos} />
+              </MapContainer>
             </div>
           </div>
-        )}
+        </div>
       </div>
 
       <div className="mt-10 pt-6 border-t border-white/10 flex justify-between">

@@ -2,7 +2,7 @@ import React from 'react';
 import { GlassButton } from '../../common/GlassComponents';
 import { Building2, Landmark, CheckCircle2, AlertCircle } from 'lucide-react';
 
-const StepPayouts = ({ data, updateData, onBack, onPublish }) => {
+const StepPayouts = ({ data, updateData, onBack, onPublish, isSubmitting }) => {
 
   return (
     <div className="animate-in fade-in slide-in-from-right-4 duration-500">
@@ -78,11 +78,21 @@ const StepPayouts = ({ data, updateData, onBack, onPublish }) => {
       </div>
 
       <div className="pt-6 border-t border-white/10 flex justify-between">
-        <GlassButton onClick={onBack} variant="ghost" className="text-slate-300 hover:text-white">
+        <GlassButton onClick={onBack} variant="ghost" className="text-slate-300 hover:text-white" disabled={isSubmitting}>
           Back
         </GlassButton>
-        <GlassButton onClick={onPublish} className="px-8 bg-green-600 hover:bg-green-500 shadow-[0_0_15px_rgba(22,163,74,0.4)]">
-          Publish Event
+        <GlassButton onClick={onPublish} disabled={isSubmitting} className="px-8 bg-green-600 hover:bg-green-500 shadow-[0_0_15px_rgba(22,163,74,0.4)]">
+          {isSubmitting ? (
+            <span className="flex items-center">
+              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Publishing...
+            </span>
+          ) : (
+            'Publish Event'
+          )}
         </GlassButton>
       </div>
     </div>
