@@ -29,9 +29,11 @@ class CORSMiddleware
             $responseOrigin = $origin ?: '*';
         } else {
             $allowedList = array_map('trim', explode(',', $allowedOrigins));
-            if (in_array($origin, $allowedList, true)) {
+
+            if ($this->isOriginAllowed($origin, $allowedList)) {
                 $responseOrigin = $origin;
             } else {
+                // Default to first allowed origin if no match
                 $responseOrigin = $allowedList[0] ?? '*';
             }
         }
@@ -56,5 +58,29 @@ class CORSMiddleware
         }
 
         return $next($params);
+    }
+
+    /**
+     * Check if an origin matches the allowed list.
+     * Supports exact matches and wildcard patterns (e.g. *.vercel.app).
+     */
+    private function isOriginAllowed(string $origin, array $allowedList): bool
+    {
+        foreach ($allowedList as $allowed) {
+            // Exact match
+            if ($allowed === $origin) {
+                return true;
+            }
+
+            // Wildcard match: e.g. "*.vercel.app" matches "foo.vercel.app"
+            if (str_starts_with($allowed, '*.')) {
+                $suffix = substr($allowed, 1); // ".vercel.app"
+                if (str_ends_with($origin, $suffix)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
