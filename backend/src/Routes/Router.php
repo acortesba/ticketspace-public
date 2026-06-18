@@ -99,13 +99,22 @@ class Router
         $fullPath = $this->groupPrefix . $path;
         $allMiddleware = array_merge($this->groupMiddleware, $middleware);
 
-        $this->routes[$method][] = [
+        $routeDef = [
             'path'       => $fullPath,
             'pattern'    => $this->buildPattern($fullPath),
             'handler'    => $handler,
-            'middleware'  => $allMiddleware,
+            'middleware' => $allMiddleware,
             'paramNames' => $this->extractParamNames($fullPath),
         ];
+
+        $this->routes[$method][] = $routeDef;
+
+        // Auto-register OPTIONS route for CORS preflight
+        if ($method !== 'OPTIONS') {
+            $optionsDef = $routeDef;
+            $optionsDef['handler'] = function() { http_response_code(204); exit; };
+            $this->routes['OPTIONS'][] = $optionsDef;
+        }
 
         return $this;
     }
@@ -118,12 +127,9 @@ class Router
         $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
         $uri = $this->getRequestUri();
 
-        // Handle CORS preflight
-        if ($method === 'OPTIONS') {
-            http_response_code(204);
-            exit;
-        }
-
+        // Handle CORS preflight by allowing it to fall through to matching routes
+        // The CORSMiddleware will intercept OPTIONS requests and set the headers.
+        
         // Find matching route
         $routes = $this->routes[$method] ?? [];
 

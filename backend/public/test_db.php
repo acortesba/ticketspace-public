@@ -19,8 +19,18 @@ $response = [
 
 // Test DB
 try {
-    $db = Database::getInstance();
-    $response['database_connection'] = 'SUCCESS';
+    $host = App::get('db.host');
+    $port = App::get('db.port');
+    $dbName = App::get('db.name');
+    $user = App::get('db.user');
+    $pass = App::get('db.pass');
+    
+    $dsn = "mysql:host={$host};port={$port};dbname={$dbName};charset=utf8mb4";
+    $pdo = new PDO($dsn, $user, $pass, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    
+    $response['database_connection'] = 'SUCCESS (' . $host . ')';
+} catch (\PDOException $e) {
+    $response['database_connection'] = 'FAILED: ' . $e->getMessage() . ' [Trying to connect as ' . App::get('db.user') . '@' . App::get('db.host') . ']';
 } catch (\Throwable $e) {
     $response['database_connection'] = 'FAILED: ' . $e->getMessage();
 }

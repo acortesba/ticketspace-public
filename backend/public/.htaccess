@@ -11,9 +11,4 @@
     RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
 </IfModule>
 
-<IfModule mod_headers.c>
-    # Handle CORS preflight for all endpoints in the API directory
-    # Note: CORSMiddleware handles this internally, but this is a failsafe
-    RewriteCond %{REQUEST_METHOD} OPTIONS
-    RewriteRule ^(.*)$ $1 [R=204,L]
-</IfModule>
+
