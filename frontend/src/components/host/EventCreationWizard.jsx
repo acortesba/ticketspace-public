@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { X, CheckCircle2, Info, MapPin, Ticket, Users, CreditCard, ChevronRight, Copy, ExternalLink, Share2 } from 'lucide-react';
 import { GlassButton, GlassCard } from '../common/GlassComponents';
 import { eventService } from '../../services/api';
-import toast from 'react-hot-toast';
+import { useToast } from '../../context/ToastContext';
 
 // Importing the individual step components
 import StepBasicInfo from './wizard-steps/StepBasicInfo';
@@ -20,6 +20,7 @@ const steps = [
 ];
 
 const EventCreationWizard = ({ onClose }) => {
+  const { addToast } = useToast();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successData, setSuccessData] = useState(null);
@@ -68,11 +69,11 @@ const EventCreationWizard = ({ onClose }) => {
     setIsSubmitting(true);
     try {
       const result = await eventService.createEvent(eventData);
-      toast.success('Event published successfully!');
+      addToast('Event published successfully!', 'success');
       setSuccessData(result.data);
     } catch (error) {
       console.error("Failed to create event:", error);
-      toast.error(error.response?.data?.message || 'Failed to publish event. Please try again.');
+      addToast(error.response?.data?.message || 'Failed to publish event. Please try again.', 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -80,7 +81,7 @@ const EventCreationWizard = ({ onClose }) => {
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
-    toast.success('Link copied to clipboard!');
+    addToast('Link copied to clipboard!', 'success');
   };
 
   const CurrentStepComponent = [
