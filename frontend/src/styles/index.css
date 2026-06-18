@@ -128,11 +128,11 @@ a {
 .page-content {
   flex: 1;
   min-height: 0;         /* Critical: allows flex child to shrink below its content size */
-  overflow: hidden;      /* STRICT: no scrolling ever */
+  overflow-y: auto;      /* Changed from hidden to allow scrolling for lists/profile */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* Changed from center to allow normal top-down flow */
   width: 100%;
   padding: var(--space-lg) var(--space-md); /* 24px top/bottom, 16px sides — system tokens */
 }
@@ -141,11 +141,11 @@ a {
 .scrollable-content {
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
   padding: var(--space-lg) var(--space-md);
 }
