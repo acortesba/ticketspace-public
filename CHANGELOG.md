@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Router: Fixed fatal exception in `executePipeline` by adding full support for class name strings, pre-instantiated middleware objects, and callables in the middleware resolution pipeline.
 - Routing: Fixed `RateLimitMiddleware` usage in `api.php` by using `RateLimitMiddleware::strict()` instance instead of incorrect static class/method array pattern.
+- Routing: Fixed CORS preflight (`OPTIONS`) handling in `Router.php` by auto-registering an `OPTIONS` route for every endpoint, allowing `CORSMiddleware` to attach headers correctly. Removed conflicting Hostinger `.htaccess` OPTIONS intercept rules.
+- Validation: Fixed `Validator.php` logic bug where strings containing numeric characters (e.g. phone numbers) were incorrectly validated as numeric limits (`max`/`min`/`between`) instead of string lengths.
 - Diagnostics: Added `public/test_db.php` file for verifying PHP configurations and remote database connectivity on Hostinger.
 
 ## [0.1.3] - 2026-06-18
