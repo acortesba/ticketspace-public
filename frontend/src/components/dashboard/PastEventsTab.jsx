@@ -39,7 +39,14 @@ const PastEventsTab = () => {
             <h3 className="text-lg font-bold text-white mb-1">{ticket.event_name}</h3>
             <div className="flex flex-wrap gap-4 text-sm text-slate-400">
               <span className="flex items-center"><Calendar className="w-3.5 h-3.5 mr-1" /> {ticket.date}</span>
-              <span className="flex items-center"><MapPin className="w-3.5 h-3.5 mr-1" /> {ticket.location}</span>
+              <a 
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ticket.location)}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                <MapPin className="w-3.5 h-3.5 mr-1" /> {ticket.location}
+              </a>
             </div>
           </div>
           

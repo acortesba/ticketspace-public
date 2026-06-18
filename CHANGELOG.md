@@ -24,6 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ticket View: Created `TicketView.jsx` as a full-screen, high-contrast dedicated route for mobile QR code scanning at the door.
 
 ### Changed
+- Dashboard UI Refactor: Moved Profile & Account settings out of Dashboard tabs and into a dedicated `/profile` route, accessible via a new Navbar profile dropdown menu.
+- Dashboard: Removed the explicit "Refund" button from active ticket cards. Refund management is now grouped under the "Billing" section in the Profile page for better separation of concerns.
+- Dashboard: Changed the location text on event cards to be clickable links that open directly in Google Maps. Removed redundant "Map" action buttons from the ticket cards.
 - Navigation: Updated `Navbar.jsx` logo link to dynamically route to the user's dashboard if authenticated, instead of the landing page.
 
 ## [0.1.4] - 2026-06-18

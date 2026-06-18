@@ -71,10 +71,15 @@ const MyTicketsTab = () => {
               <Calendar className="w-4 h-4 mr-2 text-slate-400" />
               {ticket.date} at {ticket.time}
             </div>
-            <div className="flex items-center text-sm text-slate-300">
-              <MapPin className="w-4 h-4 mr-2 text-slate-400" />
+            <a 
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ticket.location)}`} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center text-sm text-blue-400 hover:text-blue-300 transition-colors"
+            >
+              <MapPin className="w-4 h-4 mr-2" />
               {ticket.location}
-            </div>
+            </a>
           </div>
 
           <div className="flex flex-col gap-2 mt-auto">
@@ -84,14 +89,6 @@ const MyTicketsTab = () => {
               </GlassButton>
               <GlassButton variant="ghost" size="sm" className="text-xs">
                 <Calendar className="w-3.5 h-3.5 mr-1.5" /> Calendar
-              </GlassButton>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <GlassButton variant="ghost" size="sm" className="text-xs">
-                <MapPin className="w-3.5 h-3.5 mr-1.5" /> Maps
-              </GlassButton>
-              <GlassButton variant="ghost" size="sm" className="text-xs text-orange-400 hover:text-orange-300">
-                <RefreshCcw className="w-3.5 h-3.5 mr-1.5" /> Refund
               </GlassButton>
             </div>
             <GlassButton variant="outline" size="sm" className="w-full mt-2 border-white/20">

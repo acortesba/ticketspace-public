@@ -120,8 +120,11 @@ const ProfileTab = () => {
           <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4 flex items-center">
             <CreditCard className="w-4 h-4 mr-2" /> Billing
           </h3>
-          <p className="text-sm text-slate-400 mb-4">View your past receipts and payment methods.</p>
-          <GlassButton variant="outline" className="w-full">View Billing History</GlassButton>
+          <p className="text-sm text-slate-400 mb-4">View your past receipts and manage refunds.</p>
+          <div className="space-y-3">
+            <GlassButton variant="outline" className="w-full">View Billing History</GlassButton>
+            <GlassButton variant="ghost" className="w-full text-orange-400 hover:text-orange-300 hover:bg-orange-500/10">Manage Refunds</GlassButton>
+          </div>
         </GlassCard>
 
         {/* Danger Zone */}

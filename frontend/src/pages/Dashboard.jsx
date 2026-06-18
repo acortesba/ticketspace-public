@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Ticket, History, User as UserIcon } from 'lucide-react';
+import { Ticket, History } from 'lucide-react';
 import MyTicketsTab from '../components/dashboard/MyTicketsTab';
 import PastEventsTab from '../components/dashboard/PastEventsTab';
-import ProfileTab from '../components/dashboard/ProfileTab';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -12,7 +11,6 @@ const Dashboard = () => {
   const tabs = [
     { id: 'tickets', label: 'My Tickets', icon: Ticket },
     { id: 'history', label: 'Past Events', icon: History },
-    { id: 'profile', label: 'Profile & Account', icon: UserIcon },
   ];
 
   return (
@@ -20,7 +18,7 @@ const Dashboard = () => {
       {/* Header */}
       <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 mb-8">
         <h1 className="text-3xl font-bold text-white mb-2">Welcome back, {user?.first_name}</h1>
-        <p className="text-slate-400">Manage your tickets, profile, and account settings.</p>
+        <p className="text-slate-400">Manage your tickets for upcoming events.</p>
       </div>
 
       {/* Tabs Navigation */}
@@ -51,7 +49,6 @@ const Dashboard = () => {
       <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex-1 min-h-0">
         {activeTab === 'tickets' && <MyTicketsTab />}
         {activeTab === 'history' && <PastEventsTab />}
-        {activeTab === 'profile' && <ProfileTab />}
       </div>
       
       {/* Dashboard Footer */}

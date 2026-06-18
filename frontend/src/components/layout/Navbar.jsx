@@ -9,6 +9,7 @@ const Navbar = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const { t } = useTranslation('common');
   const [isOpen, setIsOpen] = React.useState(false);
+  const [isProfileOpen, setIsProfileOpen] = React.useState(false);
 
   const getDashboardLink = () => {
     if (!user) return '/';
@@ -41,11 +42,35 @@ const Navbar = () => {
                   {t('dashboard')}
                 </NavLink>
                 <div className="h-5 w-px bg-white/20 mx-2"></div>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-slate-300">{user?.first_name}</span>
-                  <GlassButton variant="ghost" size="sm" onClick={logout}>
-                    Logout
-                  </GlassButton>
+                <div className="relative">
+                  <button 
+                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                    className="flex items-center gap-2 p-1 rounded-full hover:bg-white/10 transition-colors focus:outline-none"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium text-sm shadow-inner shadow-white/20">
+                      {user?.first_name?.charAt(0) || <User className="w-4 h-4" />}
+                    </div>
+                  </button>
+                  
+                  {isProfileOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setIsProfileOpen(false)}></div>
+                      <div className="absolute right-0 top-full mt-2 w-56 rounded-xl bg-[#0a0e17] border border-white/10 shadow-2xl py-1 z-50 overflow-hidden">
+                        <div className="px-4 py-3 border-b border-white/10 bg-white/5">
+                          <p className="text-sm font-medium text-white">{user?.first_name} {user?.last_name}</p>
+                          <p className="text-xs text-slate-400 truncate">{user?.email}</p>
+                        </div>
+                        <div className="py-1">
+                          <NavLink to="/profile" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5">
+                            Profile & Account
+                          </NavLink>
+                          <button onClick={logout} className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-white/5 text-left border-t border-white/10 mt-1 pt-2">
+                            Log Out
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </>
             ) : (

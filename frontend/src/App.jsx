@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import TicketView from './pages/TicketView';
+import Profile from './pages/Profile';
 
 // Placeholder Pages
 const HostPlaceholder = () => <div className="p-8 text-white"><h2>Host Dashboard (Coming Soon)</h2></div>;
@@ -29,6 +30,7 @@ function App() {
         {/* Protected Routes - Buyers & Above */}
         <Route element={<ProtectedRoute allowedRoles={['buyer', 'staff', 'host', 'admin', 'super_admin']} />}>
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="profile" element={<Profile />} />
           <Route path="ticket/:token" element={<TicketView />} />
         </Route>
 
