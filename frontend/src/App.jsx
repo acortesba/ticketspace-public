@@ -7,9 +7,10 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import TicketView from './pages/TicketView';
 
 // Placeholder Pages
-const DashboardPlaceholder = () => <div className="p-8 text-white"><h2>Buyer Dashboard (Coming Soon)</h2></div>;
 const HostPlaceholder = () => <div className="p-8 text-white"><h2>Host Dashboard (Coming Soon)</h2></div>;
 const AdminPlaceholder = () => <div className="p-8 text-white"><h2>Admin Panel (Coming Soon)</h2></div>;
 const EventsPlaceholder = () => <div className="p-8 text-white"><h2>Events Discovery (Coming Soon)</h2></div>;
@@ -27,7 +28,8 @@ function App() {
 
         {/* Protected Routes - Buyers & Above */}
         <Route element={<ProtectedRoute allowedRoles={['buyer', 'staff', 'host', 'admin', 'super_admin']} />}>
-          <Route path="dashboard" element={<DashboardPlaceholder />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="ticket/:token" element={<TicketView />} />
         </Route>
 
         {/* Protected Routes - Hosts & Above */}

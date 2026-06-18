@@ -14,7 +14,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Validation: Fixed `Validator.php` logic bug where strings containing numeric characters (e.g. phone numbers) were incorrectly validated as numeric limits (`max`/`min`/`between`) instead of string lengths.
 - Diagnostics: Added `public/test_db.php` file for verifying PHP configurations and remote database connectivity on Hostinger.
 
-## [0.1.3] - 2026-06-18
+## [0.1.5] - 2026-06-18
+
+### Added
+- Dashboard: Created `Dashboard.jsx` for the normal user (Buyer) with tabbed navigation.
+- Dashboard: Added `MyTicketsTab.jsx` with active ticket cards, status badges, and quick links (Refund, PDF, Wallet, Calendar, Maps).
+- Dashboard: Added `PastEventsTab.jsx` for historical ticket viewing and receipt downloads.
+- Dashboard: Added `ProfileTab.jsx` for personal information, security, language preferences, billing history, and logout.
+- Ticket View: Created `TicketView.jsx` as a full-screen, high-contrast dedicated route for mobile QR code scanning at the door.
+
+### Changed
+- Navigation: Updated `Navbar.jsx` logo link to dynamically route to the user's dashboard if authenticated, instead of the landing page.
+
+## [0.1.4] - 2026-06-18
 
 ### Changed
 - Layout: Enforced strict `100dvh` no-scroll layout system across all pages.
