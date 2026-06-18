@@ -68,4 +68,15 @@ api.interceptors.response.use(
   }
 );
 
+export const ticketService = {
+  getMyTickets: () => api.get('/tickets/my').then(res => res.data.data),
+  getPastTickets: () => api.get('/tickets/past').then(res => res.data.data),
+  getTicket: (token) => api.get(`/tickets/${token}`).then(res => res.data.data),
+};
+
+export const userService = {
+  updateProfile: (data) => api.put('/users/profile', data).then(res => res.data),
+  updatePassword: (data) => api.put('/users/password', data).then(res => res.data),
+};
+
 export default api;

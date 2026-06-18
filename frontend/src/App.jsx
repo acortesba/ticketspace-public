@@ -10,9 +10,9 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import TicketView from './pages/TicketView';
 import Profile from './pages/Profile';
+import HostDashboard from './pages/HostDashboard';
 
 // Placeholder Pages
-const HostPlaceholder = () => <div className="p-8 text-white"><h2>Host Dashboard (Coming Soon)</h2></div>;
 const AdminPlaceholder = () => <div className="p-8 text-white"><h2>Admin Panel (Coming Soon)</h2></div>;
 const EventsPlaceholder = () => <div className="p-8 text-white"><h2>Events Discovery (Coming Soon)</h2></div>;
 const NotFound = () => <div className="p-8 text-white text-center mt-20"><h2 className="text-4xl font-bold mb-4">404</h2><p>Page not found</p></div>;
@@ -36,7 +36,7 @@ function App() {
 
         {/* Protected Routes - Hosts & Above */}
         <Route element={<ProtectedRoute allowedRoles={['host', 'admin', 'super_admin']} />}>
-          <Route path="host" element={<HostPlaceholder />} />
+          <Route path="host" element={<HostDashboard />} />
         </Route>
 
         {/* Protected Routes - Admins & Above */}

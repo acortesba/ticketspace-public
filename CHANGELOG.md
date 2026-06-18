@@ -18,6 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Dashboard: Created `Dashboard.jsx` for the normal user (Buyer) with tabbed navigation.
+- Backend: Created `TicketController.php` with `getMyTickets`, `getPastTickets`, and `getTicketByToken` methods to serve ticket data to buyers.
+- Backend: Created `Ticket.php` model with `getUserTickets` and `findByToken` queries containing JOINs across events and ticket_types.
+- Backend: Added `/users/profile` and `/users/password` PUT routes in `api.php` mapped to `UserController.php`.
+- Frontend: Implemented `ticketService` and `userService` API calls in `frontend/src/services/api.js`.
+- Frontend: Wired up `MyTicketsTab.jsx`, `PastEventsTab.jsx`, `ProfileTab.jsx`, and `TicketView.jsx` to fetch and submit real data from the backend.
+- Host Dashboard: Created `HostDashboard.jsx` for managing events, viewing sales metrics, and tracking active promoters.
+- Event Creation: Created a 5-step modal `EventCreationWizard.jsx` allowing hosts to setup basic info, location, ticket drops/phases, add promoters with discount codes, and choose payout methods.
 - Dashboard: Added `MyTicketsTab.jsx` with active ticket cards, status badges, and quick links (Refund, PDF, Wallet, Calendar, Maps).
 - Dashboard: Added `PastEventsTab.jsx` for historical ticket viewing and receipt downloads.
 - Dashboard: Added `ProfileTab.jsx` for personal information, security, language preferences, billing history, and logout.

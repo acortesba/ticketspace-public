@@ -2,15 +2,75 @@ import React, { useState } from 'react';
 import { User, Mail, Phone, Shield, Globe, CreditCard, LogOut, CheckCircle2, AlertCircle } from 'lucide-react';
 import { GlassCard, GlassButton, GlassInput } from '../common/GlassComponents';
 import { useAuth } from '../../context/AuthContext';
+import { userService } from '../../services/api';
 
 const ProfileTab = () => {
   const { user, logout } = useAuth();
-  const [isSaving, setIsSaving] = useState(false);
+  
+  // Profile Form State
+  const [firstName, setFirstName] = useState(user?.first_name || '');
+  const [lastName, setLastName] = useState(user?.last_name || '');
+  const [phone, setPhone] = useState(user?.phone || '');
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [profileMsg, setProfileMsg] = useState({ text: '', type: '' });
 
-  const handleSave = (e) => {
+  // Password Form State
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isSavingPassword, setIsSavingPassword] = useState(false);
+  const [passwordMsg, setPasswordMsg] = useState({ text: '', type: '' });
+
+  const handleSaveProfile = async (e) => {
     e.preventDefault();
-    setIsSaving(true);
-    setTimeout(() => setIsSaving(false), 1000);
+    setIsSavingProfile(true);
+    setProfileMsg({ text: '', type: '' });
+    
+    try {
+      const res = await userService.updateProfile({
+        first_name: firstName,
+        last_name: lastName,
+        phone: phone
+      });
+      if (res.success) {
+        setProfileMsg({ text: 'Profile updated successfully!', type: 'success' });
+        // Optionally update AuthContext user here if needed
+      }
+    } catch (err) {
+      setProfileMsg({ text: err.response?.data?.message || 'Failed to update profile', type: 'error' });
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
+
+  const handleUpdatePassword = async (e) => {
+    e.preventDefault();
+    
+    if (newPassword !== confirmPassword) {
+      setPasswordMsg({ text: 'New passwords do not match', type: 'error' });
+      return;
+    }
+
+    setIsSavingPassword(true);
+    setPasswordMsg({ text: '', type: '' });
+
+    try {
+      const res = await userService.updatePassword({
+        current_password: currentPassword,
+        new_password: newPassword,
+        new_password_confirmation: confirmPassword
+      });
+      if (res.success) {
+        setPasswordMsg({ text: 'Password updated successfully!', type: 'success' });
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+      }
+    } catch (err) {
+      setPasswordMsg({ text: err.response?.data?.message || 'Failed to update password', type: 'error' });
+    } finally {
+      setIsSavingPassword(false);
+    }
   };
 
   return (
@@ -23,15 +83,15 @@ const ProfileTab = () => {
           <h3 className="text-lg font-bold text-white mb-6 flex items-center">
             <User className="w-5 h-5 mr-2 text-blue-400" /> Personal Information
           </h3>
-          <form onSubmit={handleSave} className="space-y-4">
+          <form onSubmit={handleSaveProfile} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-1">First Name</label>
-                <GlassInput defaultValue={user?.first_name} />
+                <GlassInput value={firstName} onChange={e => setFirstName(e.target.value)} required />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-1">Last Name</label>
-                <GlassInput defaultValue={user?.last_name} />
+                <GlassInput value={lastName} onChange={e => setLastName(e.target.value)} required />
               </div>
             </div>
             
@@ -39,21 +99,27 @@ const ProfileTab = () => {
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-1">Email Address</label>
                 <div className="relative">
-                  <GlassInput defaultValue={user?.email} disabled className="opacity-70" />
+                  <GlassInput value={user?.email || ''} disabled className="opacity-70" />
                   <Mail className="absolute right-3 top-3 w-4 h-4 text-slate-400" />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-1">Phone Number</label>
                 <div className="relative">
-                  <GlassInput defaultValue={user?.phone || ''} placeholder="+1 234 567 890" />
+                  <GlassInput value={phone} onChange={e => setPhone(e.target.value)} placeholder="+1 234 567 890" />
                   <Phone className="absolute right-3 top-3 w-4 h-4 text-slate-400" />
                 </div>
               </div>
             </div>
             
+            {profileMsg.text && (
+              <div className={`text-sm ${profileMsg.type === 'error' ? 'text-red-400' : 'text-green-400'}`}>
+                {profileMsg.text}
+              </div>
+            )}
+            
             <div className="flex justify-end pt-2">
-              <GlassButton type="submit" isLoading={isSaving}>Save Changes</GlassButton>
+              <GlassButton type="submit" isLoading={isSavingProfile}>Save Changes</GlassButton>
             </div>
           </form>
         </GlassCard>
@@ -63,23 +129,30 @@ const ProfileTab = () => {
           <h3 className="text-lg font-bold text-white mb-6 flex items-center">
             <Shield className="w-5 h-5 mr-2 text-blue-400" /> Security
           </h3>
-          <form className="space-y-4">
+          <form onSubmit={handleUpdatePassword} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-1">Current Password</label>
-              <GlassInput type="password" placeholder="••••••••" />
+              <GlassInput type="password" placeholder="••••••••" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} required />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-1">New Password</label>
-                <GlassInput type="password" placeholder="••••••••" />
+                <GlassInput type="password" placeholder="••••••••" value={newPassword} onChange={e => setNewPassword(e.target.value)} required minLength={8} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-1">Confirm New Password</label>
-                <GlassInput type="password" placeholder="••••••••" />
+                <GlassInput type="password" placeholder="••••••••" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required minLength={8} />
               </div>
             </div>
+            
+            {passwordMsg.text && (
+              <div className={`text-sm ${passwordMsg.type === 'error' ? 'text-red-400' : 'text-green-400'}`}>
+                {passwordMsg.text}
+              </div>
+            )}
+            
             <div className="flex justify-end pt-2">
-              <GlassButton variant="outline">Update Password</GlassButton>
+              <GlassButton type="submit" variant="outline" isLoading={isSavingPassword}>Update Password</GlassButton>
             </div>
           </form>
         </GlassCard>

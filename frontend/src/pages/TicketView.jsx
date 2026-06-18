@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, Maximize2, Ticket } from 'lucide-react';
+import { ChevronLeft, Maximize2, Ticket as TicketIcon } from 'lucide-react';
 import { GlassCard, GlassButton } from '../components/common/GlassComponents';
-// We would normally import QRCode from a library like qrcode.react here
-// import { QRCodeSVG } from 'qrcode.react';
+import { ticketService } from '../services/api';
 
 const TicketView = () => {
   const { token } = useParams();
   const navigate = useNavigate();
   const [brightness, setBrightness] = useState(false);
+  const [ticket, setTicket] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Mock ticket data based on token
-  const ticket = {
-    event_name: 'Neon Nights Festival',
-    ticket_type: 'VIP Pass',
-    token: token,
-    owner_name: 'Alberto Cortes'
-  };
+  useEffect(() => {
+    ticketService.getTicket(token)
+      .then(data => setTicket(data.ticket))
+      .catch(err => console.error('Failed to fetch ticket:', err))
+      .finally(() => setLoading(false));
+  }, [token]);
 
   const handleMaxBrightness = () => {
     setBrightness(!brightness);
@@ -25,6 +25,25 @@ const TicketView = () => {
       alert("Screen brightness optimized for scanning (mock).");
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0a0e17] flex justify-center items-center">
+        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!ticket) {
+    return (
+      <div className="min-h-screen bg-[#0a0e17] flex flex-col justify-center items-center p-6 text-center">
+        <TicketIcon className="w-16 h-16 text-slate-600 mb-4" />
+        <h2 className="text-2xl font-bold text-white mb-2">Ticket Not Found</h2>
+        <p className="text-slate-400 mb-6">This ticket does not exist or you do not have permission to view it.</p>
+        <GlassButton onClick={() => navigate('/dashboard')}>Back to Dashboard</GlassButton>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0a0e17] flex flex-col pt-4">
@@ -65,7 +84,7 @@ const TicketView = () => {
                  </div>
                  {/* Center icon */}
                  <div className="absolute bg-white p-2">
-                    <Ticket className="w-6 h-6 text-slate-900" />
+                    <TicketIcon className="w-6 h-6 text-slate-900" />
                  </div>
               </div>
               {/* Real implementation: */}
@@ -80,7 +99,7 @@ const TicketView = () => {
           {/* Footer details */}
           <div className="bg-slate-50 p-6 text-center border-t border-slate-100">
             <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">Ticket Holder</p>
-            <p className="font-bold text-slate-800">{ticket.owner_name}</p>
+            <p className="font-bold text-slate-800">{ticket.first_name} {ticket.last_name}</p>
           </div>
         </div>
         

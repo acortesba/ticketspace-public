@@ -71,7 +71,9 @@ Every state transition is recorded in the `ticket_state_history` table with who 
 6. **Expiry** → If the reservation TTL expires without payment, tickets are released back to inventory.
 
 ### Supported Providers
-- **Stripe** — Credit/debit cards, Apple Pay, Google Pay, SEPA Direct Debit
+- **Stripe (Dual Model)** 
+  - *Option A (Centralized)*: Funds go to TicketSpace main account. TicketSpace manually wires money to hosts (Eventbrite model).
+  - *Option B (Decentralized)*: Host connects their own Stripe Express account via Stripe Connect. Funds are split at checkout and go directly to the host instantly.
 - **PayPal** — PayPal balance and linked cards
 - **Bank Transfer** — Manual SEPA transfer with reference code (admin confirms)
 
@@ -79,6 +81,14 @@ Every state transition is recorded in the `ticket_state_history` table with who 
 The platform charges a configurable fee on each transaction:
 - `PLATFORM_FEE_FIXED` — Fixed amount per transaction (default: €0.50)
 - `PLATFORM_FEE_PERCENT` — Percentage of the total (default: 2.0%)
+
+## Promoters & Affiliates System
+
+TicketSpace includes a powerful built-in promoter system that allows event hosts to track external sales and issue discount codes.
+
+- **Unique UID Tracking**: Promoters are identified by a Unique ID (UID).
+- **Promo Codes**: Hosts can associate specific text codes (e.g., `SUMMER20`) to a promoter. If a code is not provided, the system acts as a silent link tracker.
+- **Commission Structures**: Hosts can assign either a fixed amount (€) or a percentage (%) commission per ticket sold to a specific promoter.
 
 ---
 

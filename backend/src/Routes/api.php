@@ -36,6 +36,15 @@ $router->group('/api/v1', function (Router $router) {
     // ----- User Endpoints -----
     $router->group('/users', function (Router $router) {
         $router->get('/me', [AuthController::class, 'me'], [AuthMiddleware::class]);
+        $router->put('/profile', [\TicketSpace\Controllers\UserController::class, 'updateProfile'], [AuthMiddleware::class]);
+        $router->put('/password', [\TicketSpace\Controllers\UserController::class, 'updatePassword'], [AuthMiddleware::class]);
+    });
+
+    // ----- Ticket Endpoints -----
+    $router->group('/tickets', function (Router $router) {
+        $router->get('/my', [\TicketSpace\Controllers\TicketController::class, 'getMyTickets'], [AuthMiddleware::class]);
+        $router->get('/past', [\TicketSpace\Controllers\TicketController::class, 'getPastTickets'], [AuthMiddleware::class]);
+        $router->get('/{token}', [\TicketSpace\Controllers\TicketController::class, 'getTicketByToken'], [AuthMiddleware::class]);
     });
 
     // Add placeholder routes for future implementation
