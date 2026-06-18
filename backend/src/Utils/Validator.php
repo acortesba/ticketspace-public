@@ -152,20 +152,28 @@ class Validator
     private function validateMin(string $field, mixed $value, array $params): void
     {
         $min = (int) ($params[0] ?? 0);
-        if (is_string($value) && mb_strlen($value) < $min) {
-            $this->addError($field, "The {$field} field must be at least {$min} characters.");
-        } elseif (is_numeric($value) && (float) $value < $min) {
-            $this->addError($field, "The {$field} field must be at least {$min}.");
+        if (is_string($value)) {
+            if (mb_strlen($value) < $min) {
+                $this->addError($field, "The {$field} field must be at least {$min} characters.");
+            }
+        } elseif (is_numeric($value)) {
+            if ((float) $value < $min) {
+                $this->addError($field, "The {$field} field must be at least {$min}.");
+            }
         }
     }
 
     private function validateMax(string $field, mixed $value, array $params): void
     {
         $max = (int) ($params[0] ?? PHP_INT_MAX);
-        if (is_string($value) && mb_strlen($value) > $max) {
-            $this->addError($field, "The {$field} field must not exceed {$max} characters.");
-        } elseif (is_numeric($value) && (float) $value > $max) {
-            $this->addError($field, "The {$field} field must not exceed {$max}.");
+        if (is_string($value)) {
+            if (mb_strlen($value) > $max) {
+                $this->addError($field, "The {$field} field must not exceed {$max} characters.");
+            }
+        } elseif (is_numeric($value)) {
+            if ((float) $value > $max) {
+                $this->addError($field, "The {$field} field must not exceed {$max}.");
+            }
         }
     }
 
@@ -173,8 +181,16 @@ class Validator
     {
         $min = (float) ($params[0] ?? 0);
         $max = (float) ($params[1] ?? PHP_INT_MAX);
-        if (is_numeric($value) && ((float) $value < $min || (float) $value > $max)) {
-            $this->addError($field, "The {$field} field must be between {$min} and {$max}.");
+        
+        if (is_string($value)) {
+            $len = mb_strlen($value);
+            if ($len < $min || $len > $max) {
+                $this->addError($field, "The {$field} field must be between {$min} and {$max} characters.");
+            }
+        } elseif (is_numeric($value)) {
+            if ((float) $value < $min || (float) $value > $max) {
+                $this->addError($field, "The {$field} field must be between {$min} and {$max}.");
+            }
         }
     }
 
