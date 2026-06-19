@@ -81,6 +81,7 @@ export const userService = {
 
 export const eventService = {
   createEvent: (data) => api.post('/events', data).then(res => res.data),
+  getMyPromoters: () => api.get('/events/my-promoters').then(res => res.data.data),
 };
 
 export default api;

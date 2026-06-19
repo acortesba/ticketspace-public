@@ -48,15 +48,15 @@ const StepTickets = ({ data, updateData, onNext, onBack }) => {
   return (
     <div className="animate-in fade-in slide-in-from-right-4 duration-500">
       <div className="mb-8">
-        <h3 className="text-2xl font-black text-white mb-2">Tickets & Drops</h3>
-        <p className="text-slate-400">Create ticket phases. You can set time-based drops (e.g., Early Bird vs Final Release).</p>
+        <h3 className="text-2xl font-black text-white mb-2">Ticket Types</h3>
+        <p className="text-slate-400">Create the different types of tickets available for your event (e.g., General Admission, VIP, Early Bird).</p>
       </div>
 
       <div className="space-y-6">
         {/* Added Tickets List */}
         {data.tickets && data.tickets.length > 0 && (
           <div className="space-y-3 mb-8">
-            <h4 className="text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">Configured Phases</h4>
+            <h4 className="text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">Configured Tickets</h4>
             {data.tickets.map(ticket => (
               <GlassCard key={ticket.id} className="p-4 flex flex-col md:flex-row md:items-center justify-between border-blue-500/30">
                 <div className="mb-3 md:mb-0">
@@ -90,15 +90,15 @@ const StepTickets = ({ data, updateData, onNext, onBack }) => {
 
         {/* Add New Ticket Form */}
         <div className="bg-white/5 border border-white/10 rounded-xl p-5">
-          <h4 className="text-sm font-bold text-white mb-4">Add Ticket Phase / Drop</h4>
+          <h4 className="text-sm font-bold text-white mb-4">Add Ticket Type</h4>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div className="md:col-span-1">
-              <label className="block text-xs font-medium text-slate-400 mb-1">Phase Name (e.g. Early Bird) *</label>
+              <label className="block text-xs font-medium text-slate-400 mb-1">Ticket Name (e.g. VIP) *</label>
               <GlassInput 
                 value={newTicket.name} 
                 onChange={e => setNewTicket({...newTicket, name: e.target.value})} 
-                placeholder="Early Bird"
+                placeholder="VIP Admission"
               />
             </div>
             <div>
@@ -144,7 +144,7 @@ const StepTickets = ({ data, updateData, onNext, onBack }) => {
           </div>
 
           <GlassButton onClick={addTicket} variant="outline" className="w-full border-dashed border-white/20 hover:border-blue-500/50 hover:bg-blue-500/10">
-            <Plus className="w-4 h-4 mr-2" /> Add Phase
+            <Plus className="w-4 h-4 mr-2" /> Add Ticket Type
           </GlassButton>
         </div>
       </div>

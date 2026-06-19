@@ -32,6 +32,8 @@ const EventCreationWizard = ({ onClose }) => {
     startDate: '',
     endDate: '',
     doorsOpen: '',
+    eventType: 'party',
+    allocationType: 'general_admission',
     venueName: '',
     venueAddress: '',
     latitude: 40.4168,

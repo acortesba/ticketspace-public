@@ -46,6 +46,8 @@ class EventController
             'startDate'    => 'required|string',
             'venueName'    => 'required|string|max:255',
             'venueAddress' => 'nullable|string',
+            'eventType'    => 'required|string',
+            'allocationType' => 'required|string',
         ]);
 
         if (!$valid) {
@@ -88,6 +90,8 @@ class EventController
                     'event_start' => $eventStart,
                     'event_end' => $eventEnd,
                     'doors_open' => $doorsOpen,
+                    'event_type' => Sanitizer::sanitizeString($data['eventType']),
+                    'allocation_type' => Sanitizer::sanitizeString($data['allocationType']),
                     'sale_start' => $saleStart,
                     'sale_end' => $saleEnd,
                     'status' => 'published' // Immediately publish for now
@@ -126,24 +130,58 @@ class EventController
                 $promoterLinks = [];
                 if (!empty($data['promoters']) && is_array($data['promoters'])) {
                     foreach ($data['promoters'] as $promoter) {
-                        if (empty($promoter['uid']) || empty($promoter['commissionValue'])) {
+                        if (empty($promoter['commissionValue'])) {
                             continue; // Skip invalid promoters
                         }
 
-                        // Look up the user by UUID to get their internal ID
-                        $stmt = $pdo->prepare("SELECT id FROM users WHERE uuid = :uuid LIMIT 1");
-                        $stmt->execute([':uuid' => $promoter['uid']]);
-                        $userRow = $stmt->fetch();
+                        $userId = null;
+                        $uid = null;
 
-                        if (!$userRow) {
-                            throw new \Exception("User not found with UID: {$promoter['uid']}");
+                        if (!empty($promoter['uid'])) {
+                            // Look up the user by UUID to get their internal ID
+                            $stmt = $pdo->prepare("SELECT id, uuid FROM users WHERE uuid = :uuid LIMIT 1");
+                            $stmt->execute([':uuid' => $promoter['uid']]);
+                            $userRow = $stmt->fetch();
+
+                            if (!$userRow) {
+                                throw new \Exception("User not found with UID: {$promoter['uid']}");
+                            }
+                            $userId = $userRow['id'];
+                            $uid = $userRow['uuid'];
+                        } elseif (!empty($promoter['email'])) {
+                            // New Promoter: check if email exists
+                            $email = strtolower(trim($promoter['email']));
+                            $stmt = $pdo->prepare("SELECT id, uuid FROM users WHERE email = :email LIMIT 1");
+                            $stmt->execute([':email' => $email]);
+                            $userRow = $stmt->fetch();
+
+                            if ($userRow) {
+                                $userId = $userRow['id'];
+                                $uid = $userRow['uuid'];
+                            } else {
+                                // Create provisional user
+                                $uid = Sanitizer::generateUuid();
+                                $verificationToken = Sanitizer::generateToken(32);
+                                
+                                $stmt = $pdo->prepare("INSERT INTO users (uuid, email, first_name, last_name, verification_token, email_verified) VALUES (:uuid, :email, :first_name, :last_name, :token, 0)");
+                                $stmt->execute([
+                                    ':uuid' => $uid,
+                                    ':email' => $email,
+                                    ':first_name' => Sanitizer::sanitizeString($promoter['firstName'] ?? 'Promoter'),
+                                    ':last_name' => Sanitizer::sanitizeString($promoter['lastName'] ?? ''),
+                                    ':token' => $verificationToken
+                                ]);
+                                $userId = (int)$pdo->lastInsertId();
+                            }
+                        } else {
+                            continue; // Neither UID nor Email provided
                         }
 
                         $promoCode = !empty($promoter['promoCode']) ? strtoupper(trim($promoter['promoCode'])) : null;
                         
                         $this->eventPromoterModel->create([
                             'event_id' => $eventId,
-                            'user_id' => $userRow['id'],
+                            'user_id' => $userId,
                             'promo_code' => $promoCode,
                             'commission_type' => $promoter['commissionType'] === 'fixed' ? 'fixed' : 'percentage',
                             'commission_value' => (float)$promoter['commissionValue']
@@ -154,11 +192,11 @@ class EventController
                         if ($promoCode) {
                             $shareUrl .= "?promo=" . urlencode($promoCode);
                         } else {
-                            $shareUrl .= "?ref=" . urlencode($promoter['uid']);
+                            $shareUrl .= "?ref=" . urlencode($uid);
                         }
 
                         $promoterLinks[] = [
-                            'uid' => $promoter['uid'],
+                            'uid' => $uid,
                             'promoCode' => $promoCode,
                             'shareUrl' => $shareUrl
                         ];
@@ -180,6 +218,30 @@ class EventController
         } catch (\Exception $e) {
             Logger::error('Event creation failed', ['error' => $e->getMessage()]);
             Response::serverError($e->getMessage());
+        }
+    }
+    /**
+     * Get all unique promoters that the host has used in their past events
+     */
+    public function getMyPromoters(): void
+    {
+        $hostId = $_SESSION['user']['id'];
+        
+        try {
+            $stmt = Database::getInstance()->prepare("
+                SELECT DISTINCT u.uuid as uid, u.first_name, u.last_name, u.email
+                FROM event_promoters ep
+                JOIN events e ON ep.event_id = e.id
+                JOIN users u ON ep.user_id = u.id
+                WHERE e.host_id = :host_id
+            ");
+            $stmt->execute([':host_id' => $hostId]);
+            $promoters = $stmt->fetchAll();
+
+            Response::success($promoters);
+        } catch (\Exception $e) {
+            Logger::error('Failed to fetch my promoters', ['error' => $e->getMessage()]);
+            Response::serverError('Failed to fetch past promoters');
         }
     }
 }

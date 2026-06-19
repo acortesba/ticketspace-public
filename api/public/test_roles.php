@@ -1,0 +1,1 @@
+<?php require __DIR__.'/../vendor/autoload.php'; require __DIR__.'/../src/Config/App.php'; \ = \TicketSpace\Utils\Database::getInstance(); \ = \->query('SELECT u.id, u.email, r.slug FROM users u JOIN user_roles ur ON u.id = ur.user_id JOIN roles r ON ur.role_id = r.id ORDER BY u.id DESC LIMIT 5'); print_r(\->fetchAll(PDO::FETCH_ASSOC));

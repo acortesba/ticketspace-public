@@ -50,6 +50,7 @@ $router->group('/api/v1', function (Router $router) {
     // ----- Event Endpoints -----
     $router->group('/events', function(Router $router) {
         $router->post('', [\TicketSpace\Controllers\EventController::class, 'create'], [AuthMiddleware::class, RBACMiddleware::class . ':host']);
+        $router->get('/my-promoters', [\TicketSpace\Controllers\EventController::class, 'getMyPromoters'], [AuthMiddleware::class, RBACMiddleware::class . ':host']);
         // Fallback for getting events placeholder
         $router->get('', function() { Response::success([], 'Events list placeholder'); });
     });

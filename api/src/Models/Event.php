@@ -20,6 +20,8 @@ class Event extends BaseModel
         'event_start',
         'event_end',
         'doors_open',
+        'event_type',
+        'allocation_type',
         'sale_start',
         'sale_end',
         'timezone',

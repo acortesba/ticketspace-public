@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { GlassInput, GlassButton } from '../../common/GlassComponents';
-import { MapPin } from 'lucide-react';
+import { MapPin, Search } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -14,10 +14,12 @@ L.Icon.Default.mergeOptions({
 });
 
 // Component to handle map clicks
-const LocationSelector = ({ position, setPosition }) => {
+const LocationSelector = ({ position, setPosition, fetchAddressFromCoords }) => {
   useMapEvents({
     click(e) {
-      setPosition({ lat: e.latlng.lat, lng: e.latlng.lng });
+      const newPos = { lat: e.latlng.lat, lng: e.latlng.lng };
+      setPosition(newPos);
+      fetchAddressFromCoords(newPos.lat, newPos.lng);
     },
   });
 
@@ -28,14 +30,18 @@ const LocationSelector = ({ position, setPosition }) => {
 const MapUpdater = ({ position }) => {
   const map = useMap();
   useEffect(() => {
-    if (position) {
-      map.setView([position.lat, position.lng], map.getZoom());
+    if (position && position.lat && position.lng) {
+      map.setView([position.lat, position.lng], map.getZoom() < 15 ? 15 : map.getZoom());
     }
   }, [position, map]);
   return null;
 };
 
 const StepLocation = ({ data, updateData, onNext, onBack }) => {
+  const [suggestions, setSuggestions] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchTimeout = useRef(null);
+
   const handleNext = () => {
     if (data.venueName && data.venueAddress && data.latitude && data.longitude) {
       onNext(true);
@@ -50,6 +56,53 @@ const StepLocation = ({ data, updateData, onNext, onBack }) => {
 
   const handlePositionChange = (pos) => {
     updateData({ latitude: pos.lat, longitude: pos.lng });
+  };
+
+  // 1. Forward Geocoding: Search Address -> Get Coords
+  const searchAddress = async (query) => {
+    updateData({ venueAddress: query });
+    
+    if (!query || query.length < 3) {
+      setSuggestions([]);
+      return;
+    }
+
+    setIsSearching(true);
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    
+    searchTimeout.current = setTimeout(async () => {
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`);
+        const results = await res.json();
+        setSuggestions(results);
+      } catch (error) {
+        console.error("Geocoding error", error);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 500); // Debounce 500ms
+  };
+
+  const selectSuggestion = (suggestion) => {
+    updateData({
+      venueAddress: suggestion.display_name,
+      latitude: parseFloat(suggestion.lat),
+      longitude: parseFloat(suggestion.lon)
+    });
+    setSuggestions([]);
+  };
+
+  // 2. Reverse Geocoding: Click Map -> Get Address
+  const fetchAddressFromCoords = async (lat, lng) => {
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+      const result = await res.json();
+      if (result && result.display_name) {
+        updateData({ venueAddress: result.display_name });
+      }
+    } catch (error) {
+      console.error("Reverse geocoding error", error);
+    }
   };
 
   return (
@@ -69,23 +122,42 @@ const StepLocation = ({ data, updateData, onNext, onBack }) => {
           />
         </div>
 
-        <div>
+        <div className="relative">
           <label className="block text-sm font-medium text-slate-300 mb-2">Full Address <span className="text-red-400">*</span></label>
           <div className="relative">
             <GlassInput 
-              placeholder="e.g., 123 Main St, Madrid, 28001" 
+              placeholder="Start typing an address..." 
               value={data.venueAddress}
-              onChange={(e) => updateData({ venueAddress: e.target.value })}
+              onChange={(e) => searchAddress(e.target.value)}
               className="pl-10"
             />
-            <MapPin className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
+            {isSearching ? (
+               <div className="absolute left-3 top-3 w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin"></div>
+            ) : (
+               <Search className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
+            )}
           </div>
+          
+          {suggestions.length > 0 && (
+            <div className="absolute z-50 w-full mt-1 bg-slate-800 border border-white/10 rounded-xl shadow-2xl max-h-60 overflow-y-auto">
+              {suggestions.map((s, idx) => (
+                <div 
+                  key={idx} 
+                  className="p-3 hover:bg-white/10 cursor-pointer text-sm text-slate-300 border-b border-white/5 last:border-0"
+                  onClick={() => selectSuggestion(s)}
+                >
+                  <MapPin className="inline w-3 h-3 mr-2 text-blue-400" />
+                  {s.display_name}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div>
           <label className="block text-sm font-medium text-slate-300 mb-2">Pin the exact location <span className="text-red-400">*</span></label>
           <p className="text-xs text-slate-400 mb-3">Click on the map to place the pin precisely where your venue entrance is.</p>
-          <div className="p-1 rounded-xl bg-white/5 border border-white/10">
+          <div className="p-1 rounded-xl bg-white/5 border border-white/10 relative z-0">
             <div className="h-64 w-full rounded-lg overflow-hidden relative z-0">
               <MapContainer 
                 center={[currentPos.lat, currentPos.lng]} 
@@ -96,7 +168,7 @@ const StepLocation = ({ data, updateData, onNext, onBack }) => {
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
                   url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                 />
-                <LocationSelector position={currentPos} setPosition={handlePositionChange} />
+                <LocationSelector position={currentPos} setPosition={handlePositionChange} fetchAddressFromCoords={fetchAddressFromCoords} />
                 <MapUpdater position={currentPos} />
               </MapContainer>
             </div>

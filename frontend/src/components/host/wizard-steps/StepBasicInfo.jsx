@@ -41,6 +41,35 @@ const StepBasicInfo = ({ data, updateData, onNext, isFirstStep }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2">Event Type <span className="text-red-400">*</span></label>
+            <select
+              className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all appearance-none"
+              value={data.eventType}
+              onChange={(e) => updateData({ eventType: e.target.value })}
+            >
+              <option value="party">Party / Clubbing</option>
+              <option value="concert">Live Concert</option>
+              <option value="festival">Festival</option>
+              <option value="conference">Conference / Meetup</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2">Allocation Type <span className="text-red-400">*</span></label>
+            <select
+              className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all appearance-none"
+              value={data.allocationType}
+              onChange={(e) => updateData({ allocationType: e.target.value })}
+            >
+              <option value="general_admission">General Admission (Standing)</option>
+              <option value="seated">Seated</option>
+              <option value="mixed">Mixed (Standing & Seated)</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
             <label className="block text-sm font-medium text-slate-300 mb-2">Start Date & Time <span className="text-red-400">*</span></label>
             <GlassInput 
               type="datetime-local" 
