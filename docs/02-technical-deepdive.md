@@ -46,7 +46,10 @@ Static convenience methods wrap PDO transactions:
 ```php
 Database::beginTransaction();
 try {
-    // ... multiple queries ...
+    // e.g., EventController creating Event + Tickets + Promoters
+    $event = $this->createEvent($data);
+    $this->createTicketTypes($event['id'], $data['tickets']);
+    $this->createEventPromoters($event['id'], $data['promoters']);
     Database::commit();
 } catch (\Exception $e) {
     Database::rollback();
@@ -315,13 +318,13 @@ app_settings (key-value config)
 email_templates (per-language email content)
 ```
 
-### Tables (17 total):
-1. `users` — Accounts with Argon2ID hashes
+### Tables (18 total):
+1. `users` — Accounts with Argon2ID hashes and `email_verified` flags
 2. `roles` — 5 default roles
 3. `permissions` — Granular permission slugs
 4. `user_roles` — User ↔ Role junction
 5. `role_permissions` — Role ↔ Permission junction
-6. `events` — Event metadata, venue, dates, capacity
+6. `events` — Event metadata (`event_type`, `allocation_type`), venue, dates, capacity
 7. `ticket_types` — Pricing, quantities, sections, seat ranges
 8. `tickets` — Individual tickets with QR tokens
 9. `ticket_state_history` — Audit trail for ticket status changes
@@ -329,10 +332,11 @@ email_templates (per-language email content)
 11. `payments` — Payment records with provider details
 12. `payment_refunds` — Refund tracking
 13. `event_staff` — Staff assigned to specific events
-14. `audit_log` — System-wide action log
-15. `app_settings` — Key-value platform configuration
-16. `sessions` — JWT refresh token sessions
-17. `email_templates` — Customizable email content
+14. `event_promoters` — Tracks which promoters are allowed to sell tickets for which event
+15. `audit_log` — System-wide action log
+16. `app_settings` — Key-value platform configuration
+17. `sessions` — JWT refresh token sessions
+18. `email_templates` — Customizable email content
 
 ---
 
@@ -342,7 +346,7 @@ email_templates (per-language email content)
 - **React 18** with functional components and hooks
 - **Vite** for build tooling with HMR
 - **React Router v6** with nested routes and `<Outlet />`
-- **react-i18next** for multi-language support
+- **react-leaflet** & **Nominatim API** for maps and forward/reverse geocoding
 - **Axios** with request/response interceptors
 - **Tailwind CSS 3** + custom CSS variables for the glassmorphism design system
 

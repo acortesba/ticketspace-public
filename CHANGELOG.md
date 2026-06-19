@@ -5,6 +5,18 @@ All notable changes to the TicketSpace project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.6] - 2026-06-19
+
+### Added
+- Backend: Created `EventController.php` with transactional `create` method handling complex nested payload for events, ticket phases, and promoters.
+- Backend: Created models `Event.php`, `TicketType.php`, and `EventPromoter.php`.
+- Backend: Added `POST /events` route with RBAC protection in `api.php`.
+- Database: Appended `event_promoters` table to `schema.sql` migration script.
+- Documentation: Created `docs/05-api-reference.md` comprehensively detailing Authentication, Event, Ticket, and User endpoints.
+
+### Changed
+- Documentation: Overhauled `/docs` folder (`01-app-overview.md`, `02-technical-deepdive.md`, `04-performance-seo-analysis.md`) to reflect current architecture, including the split Vercel/Hostinger deployment, Nominatim API integration, Provisional User system, and transaction-based Event Controller.
+
 ## [0.1.4] - 2026-06-18
 
 ### Fixed

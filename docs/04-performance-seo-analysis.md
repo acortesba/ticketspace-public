@@ -136,15 +136,23 @@ React SPAs are client-rendered, which means search engine crawlers may not execu
 
 ---
 
-## Deployment on Hostinger
+## Deployment Architecture (Vercel + Hostinger)
 
-### Build Pipeline
-1. `npm run build` → generates `frontend/dist/`
-2. Upload `frontend/dist/` contents to the public web root on Hostinger.
-3. Upload `backend/` to a subdirectory (e.g., `api/`) with `public/` as the web root.
-4. Configure `.env` on the server.
-5. Run `composer install --no-dev --optimize-autoloader` on the server.
-6. Run `php migrations/migrate.php` to create the database tables.
+TicketSpace uses a split deployment model for maximum performance and cost-efficiency:
+
+### Frontend (Vercel)
+The React SPA is deployed on Vercel, providing global CDN edge caching, automatic HTTPS, and CI/CD integration with GitHub.
+1. Code pushed to the `development` or `main` branches automatically triggers a build (`npm run build`).
+2. Vercel serves the static assets (`dist/`) globally.
+3. Environment variables (like `VITE_API_URL`) are configured in the Vercel dashboard.
+
+### Backend API (Hostinger)
+The PHP REST API and MySQL database run on Hostinger shared hosting.
+1. The `api/` folder is uploaded to the Hostinger file manager.
+2. The `api/public` folder acts as the web root, hiding sensitive files like `.env` and `src/`.
+3. `composer install --no-dev --optimize-autoloader` is run to build dependencies.
+4. The database schema is initialized using `php migrations/migrate.php`.
+5. An `.htaccess` at the root redirects all traffic to `public/index.php`.
 
 ### Caching Headers (Hostinger .htaccess)
 ```apache

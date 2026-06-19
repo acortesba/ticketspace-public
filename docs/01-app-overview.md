@@ -89,6 +89,7 @@ TicketSpace includes a powerful built-in promoter system that allows event hosts
 - **Unique UID Tracking**: Promoters are identified by a Unique ID (UID).
 - **Promo Codes**: Hosts can associate specific text codes (e.g., `SUMMER20`) to a promoter. If a code is not provided, the system acts as a silent link tracker.
 - **Commission Structures**: Hosts can assign either a fixed amount (€) or a percentage (%) commission per ticket sold to a specific promoter.
+- **Provisional Users**: When a host invites a new promoter by email, the backend securely generates a "Provisional" user account (with `email_verified=0` and no password) and links them to the event. The invitation link allows the user to claim their account and set a password.
 
 ---
 
@@ -146,7 +147,7 @@ Email templates are stored in the `email_templates` table and can be customized 
 ```
 ┌─────────────────────────────────────────────────────┐
 │                     React SPA                       │
-│   Vite • React Router • i18n • Glassmorphism UI     │
+│   Vite • React Router • Zustand • Glassmorphism     │
 │             https://ticketspace.vercel.app           │
 └──────────────────────┬──────────────────────────────┘
                        │ Axios (JWT Bearer)
@@ -160,7 +161,7 @@ Email templates are stored in the `email_templates` table and can be customized 
                        ▼
 ┌─────────────────────────────────────────────────────┐
 │               MySQL 8.0 Database                    │
-│          17 tables • InnoDB • utf8mb4               │
+│          18 tables • InnoDB • utf8mb4               │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -170,20 +171,20 @@ Email templates are stored in the `email_templates` table and can be customized 
 
 ```
 ticketspace/
-├── backend/
+├── api/                        ← Backend API
 │   ├── composer.json
 │   ├── .env.example
 │   ├── migrations/
-│   │   └── migrate.php         ← 17 tables + seed data
+│   │   └── schema.sql          ← 18 tables + schema
 │   ├── public/
 │   │   ├── index.php           ← API entry point
 │   │   ├── .htaccess           ← URL rewriting
 │   │   └── uploads/            ← User-uploaded images
 │   ├── src/
 │   │   ├── Config/App.php      ← .env loader + config access
-│   │   ├── Controllers/        ← AuthController, UserController
+│   │   ├── Controllers/        ← AuthController, UserController, EventController
 │   │   ├── Middleware/         ← CORS, Auth, RateLimit, RBAC
-│   │   ├── Models/             ← BaseModel, User, Role
+│   │   ├── Models/             ← BaseModel, User, Role, Event
 │   │   ├── Routes/             ← Router + api.php definitions
 │   │   └── Utils/              ← Database, Logger, Response, Validator, Sanitizer
 │   └── storage/                ← QR codes, cache, logs, rate limits
